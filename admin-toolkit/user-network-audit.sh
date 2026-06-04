@@ -23,6 +23,169 @@ ONLY_ACTIVE_NEIGHBORS=1
 CUSTOM_SUBNET=""
 RESOLVE_HOSTNAMES=1
 
+USE_COLOR=1
+USE_UNICODE=1
+TERM_WIDTH="$(tput cols 2>/dev/null || echo 100)"
+
+if [ -n "${NO_COLOR:-}" ]; then
+  USE_COLOR=0
+fi
+
+init_colors() {
+  if [ "$USE_COLOR" -eq 1 ]; then
+    RESET='\033[0m'
+    BOLD='\033[1m'
+    DIM='\033[2m'
+
+    BLACK='\033[0;30m'
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[0;33m'
+    BLUE='\033[0;34m'
+    MAGENTA='\033[0;35m'
+    CYAN='\033[0;36m'
+    WHITE='\033[0;37m'
+
+    BRIGHT_BLACK='\033[0;90m'
+    BRIGHT_RED='\033[0;91m'
+    BRIGHT_GREEN='\033[0;92m'
+    BRIGHT_YELLOW='\033[0;93m'
+    BRIGHT_BLUE='\033[0;94m'
+    BRIGHT_MAGENTA='\033[0;95m'
+    BRIGHT_CYAN='\033[0;96m'
+    BRIGHT_WHITE='\033[0;97m'
+  else
+    RESET=''
+    BOLD=''
+    DIM=''
+
+    BLACK=''
+    RED=''
+    GREEN=''
+    YELLOW=''
+    BLUE=''
+    MAGENTA=''
+    CYAN=''
+    WHITE=''
+
+    BRIGHT_BLACK=''
+    BRIGHT_RED=''
+    BRIGHT_GREEN=''
+    BRIGHT_YELLOW=''
+    BRIGHT_BLUE=''
+    BRIGHT_MAGENTA=''
+    BRIGHT_CYAN=''
+    BRIGHT_WHITE=''
+  fi
+}
+
+repeat_char() {
+  local char="$1"
+  local count="$2"
+  local out=""
+  local i=0
+  while [ "$i" -lt "$count" ]; do
+    out="${out}${char}"
+    i=$((i + 1))
+  done
+  printf "%s" "$out"
+}
+
+print_rule() {
+  printf "%b\n" "${BRIGHT_BLACK}$(repeat_char "─" "$TERM_WIDTH")${RESET}"
+}
+
+print_banner() {
+  local title="$1"
+  print_rule
+  printf "%b\n" "${BOLD}${BRIGHT_CYAN}  $title${RESET}"
+  printf "%b\n" "${DIM}${BRIGHT_WHITE}  Windows User & Network Audit${RESET}"
+  print_rule
+}
+
+print_section_terminal() {
+  local title="$1"
+  echo
+  printf "%b\n" "${BOLD}${BRIGHT_BLUE}▶ $title${RESET}"
+  printf "%b\n" "${BRIGHT_BLACK}$(repeat_char "─" 60)${RESET}"
+}
+
+print_subsection() {
+  local title="$1"
+  echo
+  printf "%b\n" "${BOLD}${CYAN}• $title${RESET}"
+}
+
+kv_line() {
+  local key="$1"
+  local value="$2"
+  printf "%b %-24s %b %s\n" "${BRIGHT_WHITE}" "$key" "${BRIGHT_BLACK}:${RESET}" "$value"
+}
+
+status_badge() {
+  local state="$1"
+  case "$state" in
+    OK|Reachable|Connected|Enabled|Up|True|Loaded|Active)
+      printf "%b" "${BOLD}${GREEN}[OK]${RESET}"
+      ;;
+    WARN|Warning|Stale|Unknown)
+      printf "%b" "${BOLD}${YELLOW}[WARN]${RESET}"
+      ;;
+    ERROR|Critical|Disabled|Down|False|Unreachable|Failed)
+      printf "%b" "${BOLD}${RED}[ERR]${RESET}"
+      ;;
+    *)
+      printf "%b" "${BOLD}${MAGENTA}[INFO]${RESET}"
+      ;;
+  esac
+}
+
+print_info() {
+  printf "%b %s\n" "$(status_badge INFO)" "$1"
+}
+
+print_ok() {
+  printf "%b %s\n" "$(status_badge OK)" "$1"
+}
+
+print_warn() {
+  printf "%b %s\n" "$(status_badge WARN)" "$1"
+}
+
+print_error() {
+  printf "%b %s\n" "$(status_badge ERROR)" "$1"
+}
+
+print_table_header() {
+  printf "%b\n" "${BOLD}${BRIGHT_WHITE}%-18s %-22s %-22s %-12s${RESET}" "TYP" "NAME/IP" "DETAIL" "STATUS"
+  printf "%b\n" "${BRIGHT_BLACK}$(repeat_char "─" 85)${RESET}"
+}
+
+print_table_row() {
+  local c1="$1"
+  local c2="$2"
+  local c3="$3"
+  local c4="$4"
+
+  local status_colored
+  case "$c4" in
+    OK|Reachable|Enabled|Loaded|Active|True)
+      status_colored="${GREEN}$c4${RESET}"
+      ;;
+    Warning|Stale|Unknown)
+      status_colored="${YELLOW}$c4${RESET}"
+      ;;
+    Disabled|Unreachable|Error|Failed|False)
+      status_colored="${RED}$c4${RESET}"
+      ;;
+    *)
+      status_colored="${CYAN}$c4${RESET}"
+      ;;
+  esac
+
+  printf "%-18s %-22s %-22s %b\n" "$c1" "$c2" "$c3" "$status_colored"
+}
+
 log() {
   local level="$1"
   local msg="$2"
@@ -127,12 +290,13 @@ is_number() {
 }
 
 write_separator() {
+  print_section_terminal "$1"
   {
     echo
     echo "============================================================"
     echo "$1"
     echo "============================================================"
-  } | tee -a "$REPORT_FILE"
+  } >> "$REPORT_FILE"
 }
 
 write_line() {
@@ -155,33 +319,85 @@ check_environment() {
   log "INFO" "Prüfe Umgebung"
 
   if ! command_exists powershell.exe; then
-    echo "powershell.exe wurde nicht gefunden."
+    print_error "powershell.exe wurde nicht gefunden."
     echo "Dieses Skript ist für Windows + Git Bash gedacht."
     exit 1
   fi
 
   if ! is_number "$PING_LIMIT"; then
-    echo "PING_LIMIT muss numerisch sein."
+    print_error "PING_LIMIT muss numerisch sein."
     exit 1
   fi
 }
 
 collect_system_header() {
   write_separator "SYSTEM"
-  write_line "Skriptname       : $SCRIPT_NAME"
-  write_line "Computername     : $(hostname 2>/dev/null || echo unbekannt)"
-  write_line "Aktueller Benutzer: $(whoami 2>/dev/null || echo unbekannt)"
-  write_line "Zeit             : $(date)"
-  write_line "Skriptpfad       : $SCRIPT_DIR"
 
-  local admin_status
+  local computer current_user now admin_status
+  computer="$(hostname 2>/dev/null || echo unbekannt)"
+  current_user="$(whoami 2>/dev/null || echo unbekannt)"
+  now="$(date)"
+
   admin_status="$(run_powershell "
     \$current = [Security.Principal.WindowsIdentity]::GetCurrent()
     \$principal = New-Object Security.Principal.WindowsPrincipal(\$current)
     \$principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
   " | tail -n 1)"
 
-  write_line "Admin-Rechte     : ${admin_status:-unbekannt}"
+  kv_line "Skriptname" "$SCRIPT_NAME"
+  kv_line "Computername" "$computer"
+  kv_line "Aktueller Benutzer" "$current_user"
+  kv_line "Zeit" "$now"
+  kv_line "Skriptpfad" "$SCRIPT_DIR"
+  kv_line "Admin-Rechte" "${admin_status:-unbekannt}"
+
+  {
+    echo "Skriptname: $SCRIPT_NAME"
+    echo "Computername: $computer"
+    echo "Aktueller Benutzer: $current_user"
+    echo "Zeit: $now"
+    echo "Skriptpfad: $SCRIPT_DIR"
+    echo "Admin-Rechte: ${admin_status:-unbekannt}"
+  } >> "$REPORT_FILE"
+}
+
+collect_summary_stats() {
+  write_separator "ZUSAMMENFASSUNG"
+
+  local stats
+  stats="$(run_powershell "
+    \$localUsers = 0
+    \$profiles = 0
+    \$neighbors = 0
+
+    try {
+      if (Get-Command Get-LocalUser -ErrorAction SilentlyContinue) {
+        \$localUsers = (Get-LocalUser).Count
+      }
+    } catch {}
+
+    try {
+      \$profiles = (Get-CimInstance Win32_UserProfile | Where-Object { \$_.Special -eq \$false -and \$_.LocalPath }).Count
+    } catch {}
+
+    try {
+      \$neighbors = (Get-NetNeighbor -AddressFamily IPv4 | Where-Object { \$_.IPAddress -match '^\d+\.\d+\.\d+\.\d+$' }).Count
+    } catch {}
+
+    Write-Output ('LocalUsers=' + \$localUsers)
+    Write-Output ('Profiles=' + \$profiles)
+    Write-Output ('Neighbors=' + \$neighbors)
+  ")"
+
+  if [ -n "$stats" ]; then
+    echo "$stats" | while IFS='=' read -r key value; do
+      [ -n "$key" ] && kv_line "$key" "$value"
+    done
+    echo "$stats" >> "$REPORT_FILE"
+  else
+    print_warn "Keine Statistik verfügbar."
+    write_line "Keine Statistik verfügbar."
+  fi
 }
 
 collect_local_users() {
@@ -191,17 +407,31 @@ collect_local_users() {
   result="$(run_powershell "
     if (Get-Command Get-LocalUser -ErrorAction SilentlyContinue) {
       Get-LocalUser |
-      Select-Object Name, Enabled, PasswordRequired, LastLogon, SID, PrincipalSource |
-      Sort-Object Name |
-      Format-Table -AutoSize
+      Select-Object Name, Enabled, PasswordRequired, LastLogon |
+      ConvertTo-Csv -NoTypeInformation
     } else {
-      net user
+      ''
     }
   ")"
 
   if [ -n "$result" ]; then
-    write_line "$result"
+    print_subsection "Benutzerübersicht"
+    print_table_header
+
+    echo "$result" | tail -n +2 | while IFS=',' read -r name enabled passwordrequired lastlogon; do
+      name="${name%\"}"; name="${name#\"}"
+      enabled="${enabled%\"}"; enabled="${enabled#\"}"
+      passwordrequired="${passwordrequired%\"}"; passwordrequired="${passwordrequired#\"}"
+
+      local state="Disabled"
+      [ "$enabled" = "True" ] && state="Enabled"
+
+      print_table_row "LocalUser" "$name" "PW:$passwordrequired" "$state"
+    done
+
+    echo "$result" >> "$REPORT_FILE"
   else
+    print_warn "Keine lokalen Benutzerkonten ermittelbar."
     write_line "Keine lokalen Benutzerkonten ermittelbar."
   fi
 }
@@ -222,8 +452,10 @@ collect_local_groups() {
   ")"
 
   if [ -n "$result" ]; then
+    print_ok "Lokale Gruppen erfolgreich gelesen."
     write_line "$result"
   else
+    print_warn "Keine lokalen Gruppen ermittelbar."
     write_line "Keine lokalen Gruppen ermittelbar."
   fi
 }
@@ -258,8 +490,10 @@ collect_user_profiles() {
   ")"
 
   if [ -n "$result" ]; then
+    print_ok "Benutzerprofile erfolgreich gelesen."
     write_line "$result"
   else
+    print_warn "Keine Benutzerprofile gefunden."
     write_line "Keine Benutzerprofile gefunden."
   fi
 }
@@ -290,8 +524,10 @@ collect_profile_folder_details() {
   ")"
 
   if [ -n "$result" ]; then
+    print_ok "Profilordner gelesen."
     write_line "$result"
   else
+    print_warn "Keine Profilordner gefunden."
     write_line "Keine Profilordner gefunden."
   fi
 }
@@ -303,8 +539,10 @@ collect_logged_in_users() {
   result="$(query user 2>/dev/null | tr -d '\r')"
 
   if [ -n "$result" ]; then
+    print_ok "Angemeldete Benutzer gelesen."
     write_line "$result"
   else
+    print_warn "query user liefert keine Daten oder benötigt andere Rechte."
     write_line "query user liefert keine Daten oder benötigt andere Rechte."
   fi
 }
@@ -347,8 +585,10 @@ collect_last_logins_from_eventlog() {
   ")"
 
   if [ -n "$result" ]; then
+    print_ok "Eventlog-Einträge gelesen."
     write_line "$result"
   else
+    print_warn "Keine Eventlog-Daten verfügbar."
     write_line "Keine Eventlog-Daten verfügbar."
   fi
 }
@@ -378,6 +618,7 @@ warm_up_network_cache() {
   fi
 
   log "INFO" "Starte Ping-Warmup"
+  print_info "Starte Ping-Warmup für Neighbor-/ARP-Cache."
 
   local subnet_list
   if [ -n "$CUSTOM_SUBNET" ]; then
@@ -424,8 +665,10 @@ collect_network_interfaces() {
   ")"
 
   if [ -n "$result" ]; then
+    print_ok "Netzwerk-Interfaces gelesen."
     write_line "$result"
   else
+    print_warn "Keine Netzwerk-Interfaces gefunden."
     write_line "Keine Netzwerk-Interfaces gefunden."
   fi
 }
@@ -433,38 +676,22 @@ collect_network_interfaces() {
 collect_network_neighbors() {
   write_separator "NETZWERK NACHBARN"
 
-  local only_active_filter="1 -eq 1"
-  if [ "$ONLY_ACTIVE_NEIGHBORS" -eq 1 ]; then
-    only_active_filter="\$_.State -ne 'Unreachable' -and \$_.State -ne 'Permanent'"
-  fi
-
-  local resolve_code=""
-  if [ "$RESOLVE_HOSTNAMES" -eq 1 ]; then
-    resolve_code='
-      $hostName = ""
-      try {
-        $dns = Resolve-DnsName $n.IPAddress -ErrorAction Stop
-        $hostName = ($dns | Select-Object -First 1 -ExpandProperty NameHost)
-      } catch {
-        $hostName = ""
-      }'
-  else
-    resolve_code='$hostName = ""'
-  fi
-
   local result
   result="$(run_powershell "
     \$rows = @()
     try {
       \$neighbors = Get-NetNeighbor -AddressFamily IPv4 |
         Where-Object {
-          $only_active_filter -and
           \$_.IPAddress -match '^\d+\.\d+\.\d+\.\d+$' -and
           \$_.IPAddress -notlike '127.*'
         }
 
       foreach (\$n in \$neighbors) {
-        $resolve_code
+        \$hostName = ''
+        try {
+          \$dns = Resolve-DnsName \$n.IPAddress -ErrorAction Stop
+          \$hostName = (\$dns | Select-Object -First 1 -ExpandProperty NameHost)
+        } catch {}
 
         \$rows += [PSCustomObject]@{
           IPAddress      = \$n.IPAddress
@@ -475,19 +702,29 @@ collect_network_neighbors() {
         }
       }
 
-      if (\$rows.Count -gt 0) {
-        \$rows | Sort-Object IPAddress | Format-Table -Wrap -AutoSize
-      } else {
-        'Keine Netzwerk-Nachbarn gefunden.'
-      }
-    } catch {
-      'Get-NetNeighbor nicht verfügbar.'
-    }
+      \$rows | ConvertTo-Csv -NoTypeInformation
+    } catch {}
   ")"
 
   if [ -n "$result" ]; then
-    write_line "$result"
+    print_subsection "Gefundene Geräte"
+    print_table_header
+
+    echo "$result" | tail -n +2 | while IFS=',' read -r ip host mac state iface; do
+      ip="${ip%\"}"; ip="${ip#\"}"
+      host="${host%\"}"; host="${host#\"}"
+      mac="${mac%\"}"; mac="${mac#\"}"
+      state="${state%\"}"; state="${state#\"}"
+
+      [ -z "$host" ] && host="-"
+      [ -z "$mac" ] && mac="-"
+
+      print_table_row "Network" "$ip" "$host" "$state"
+    done
+
+    echo "$result" >> "$REPORT_FILE"
   else
+    print_warn "Keine Nachbarn ermittelt."
     write_line "Keine Nachbarn ermittelt."
   fi
 }
@@ -499,44 +736,11 @@ collect_arp_cache() {
   result="$(arp -a 2>/dev/null | tr -d '\r')"
 
   if [ -n "$result" ]; then
+    print_ok "ARP-Cache gelesen."
     write_line "$result"
   else
+    print_warn "Keine ARP-Daten verfügbar."
     write_line "Keine ARP-Daten verfügbar."
-  fi
-}
-
-collect_summary_stats() {
-  write_separator "ZUSAMMENFASSUNG"
-
-  local stats
-  stats="$(run_powershell "
-    \$localUsers = 0
-    \$profiles = 0
-    \$neighbors = 0
-
-    try {
-      if (Get-Command Get-LocalUser -ErrorAction SilentlyContinue) {
-        \$localUsers = (Get-LocalUser).Count
-      }
-    } catch {}
-
-    try {
-      \$profiles = (Get-CimInstance Win32_UserProfile | Where-Object { \$_.Special -eq \$false -and \$_.LocalPath }).Count
-    } catch {}
-
-    try {
-      \$neighbors = (Get-NetNeighbor -AddressFamily IPv4 | Where-Object { \$_.IPAddress -match '^\d+\.\d+\.\d+\.\d+$' }).Count
-    } catch {}
-
-    Write-Output ('LocalUsers=' + \$localUsers)
-    Write-Output ('Profiles=' + \$profiles)
-    Write-Output ('Neighbors=' + \$neighbors)
-  ")"
-
-  if [ -n "$stats" ]; then
-    write_line "$stats"
-  else
-    write_line "Keine Statistik verfügbar."
   fi
 }
 
@@ -604,6 +808,7 @@ export_csv() {
     \$rows | Export-Csv -Path '$CSV_FILE' -NoTypeInformation -Encoding UTF8
   " >/dev/null
 
+  print_ok "CSV exportiert: $CSV_FILE"
   write_line "CSV exportiert: $CSV_FILE"
 }
 
@@ -647,17 +852,23 @@ export_json() {
     \$data | ConvertTo-Json -Depth 6 | Set-Content -Path '$JSON_FILE' -Encoding UTF8
   " >/dev/null
 
+  print_ok "JSON exportiert: $JSON_FILE"
   write_line "JSON exportiert: $JSON_FILE"
 }
 
 main() {
+  init_colors
   parse_args "$@"
   ensure_output_dir
   check_environment
 
+  clear 2>/dev/null
+  print_banner "USER NETWORK AUDIT"
+
   log "INFO" "Skript gestartet"
   log "INFO" "Report-Datei: $REPORT_FILE"
 
+  print_info "Starte Analyse ..."
   collect_system_header
   collect_summary_stats
   collect_local_users
@@ -674,6 +885,7 @@ main() {
     collect_arp_cache
   else
     write_separator "NETZWERK"
+    print_warn "Netzwerkscan deaktiviert."
     write_line "Netzwerkscan deaktiviert."
   fi
 
@@ -681,10 +893,12 @@ main() {
   export_json
 
   echo
-  echo "Fertig."
-  echo "TXT : $REPORT_FILE"
-  [ "$EXPORT_CSV" -eq 1 ] && echo "CSV : $CSV_FILE"
-  [ "$EXPORT_JSON" -eq 1 ] && echo "JSON: $JSON_FILE"
+  print_rule
+  print_ok "Analyse abgeschlossen"
+  kv_line "TXT Report" "$REPORT_FILE"
+  [ "$EXPORT_CSV" -eq 1 ] && kv_line "CSV Export" "$CSV_FILE"
+  [ "$EXPORT_JSON" -eq 1 ] && kv_line "JSON Export" "$JSON_FILE"
+  print_rule
 
   log "INFO" "Skript abgeschlossen"
 }
