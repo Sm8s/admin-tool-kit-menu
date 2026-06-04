@@ -1,0 +1,11 @@
+[2026-06-04 10:15:34] [INFO] Prüfe Umgebung
+[2026-06-04 10:15:34] [INFO] Skript gestartet
+[2026-06-04 10:15:34] [INFO] Report-Datei: /c/Users/tn/OneDrive - GPB Gesellschaft für Personalentwicklung und Bildung mbH/Desktop/linux-learning-platform/admin-toolkit/reports/user_network_audit_2026-06-04_10-15-34.txt
+Test-Path : Zugriff verweigert
+In Zeile:7 Zeichen:11
++       if (Test-Path $ntUserPath) {
++           ~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : PermissionDenied: (C:\Users\admin\NTUSER.DAT:String) [Test-Path], UnauthorizedAccessException
+    + FullyQualifiedErrorId : ItemExistsUnauthorizedAccessError,Microsoft.PowerShell.Commands.TestPathCommand
+ 
+[2026-06-04 10:15:50] [INFO] Ping-Sweep deaktiviert

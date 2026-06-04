@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Toolkit Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121933;
+      --panel-2: #182247;
+      --line: #29345f;
+      --text: #e8ecff;
+      --muted: #9cabd8;
+      --accent: #59c3ff;
+      --accent-2: #6ef3c5;
+      --warn: #ffc857;
+      --danger: #ff6b81;
+      --ok: #63e6be;
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(89,195,255,.18), transparent 32%),
+        radial-gradient(circle at top right, rgba(110,243,197,.14), transparent 28%),
+        linear-gradient(180deg, #0a0f1f 0%, #0d1328 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: min(1240px, calc(100% - 32px));
+      margin: 24px auto;
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 20px;
+    }
+
+    .sidebar, .main {
+      background: rgba(18, 25, 51, .88);
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .sidebar {
+      border-radius: var(--radius);
+      padding: 22px;
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(89,195,255,.28);
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 2px solid rgba(255,255,255,.75);
+      border-radius: 10px;
+    }
+
+    .brand-mark::after {
+      inset: 18px;
+      border-radius: 6px;
+      border-color: rgba(255,255,255,.45);
+    }
+
+    .brand h1 {
+      font-size: 1.05rem;
+      line-height: 1.15;
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .panel-title {
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      color: var(--muted);
+      margin: 24px 0 12px;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: grid;
+      gap: 10px;
+    }
+
+    .nav button,
+    .file-item {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.05);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      color: var(--text);
+      border-radius: 14px;
+      padding: 13px 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .nav button:hover,
+    .file-item:hover,
+    .nav button.active,
+    .file-item.active {
+      transform: translateY(-1px);
+      border-color: rgba(89,195,255,.45);
+      background: linear-gradient(180deg, rgba(89,195,255,.15), rgba(89,195,255,.05));
+      box-shadow: 0 10px 24px rgba(89,195,255,.10);
+    }
+
+    .nav-label { font-weight: 700; display:block; }
+    .nav-meta { color: var(--muted); font-size: .84rem; margin-top: 4px; }
+
+    .main {
+      border-radius: 24px;
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 28px 28px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background:
+        linear-gradient(135deg, rgba(89,195,255,.12), rgba(110,243,197,.08)),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2vw, 2.3rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      max-width: 65ch;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .button-primary {
+      background: linear-gradient(135deg, var(--accent), #7fa8ff);
+      color: #09111f;
+    }
+
+    .button-secondary {
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .button:hover { transform: translateY(-1px); }
+
+    .content {
+      padding: 24px 28px 28px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card,
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+    }
+
+    .stat-foot {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 20px;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-head h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .badge {
+      font-size: .75rem;
+      color: #07111f;
+      background: linear-gradient(135deg, var(--accent-2), #b7ffe8);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 10px;
+      max-height: 380px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .file-item small {
+      display: block;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .viewer {
+      min-height: 420px;
+      background: #0a1020;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .viewer-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    pre {
+      margin: 0;
+      padding: 18px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .9rem;
+      line-height: 1.55;
+      color: #dbe6ff;
+    }
+
+    .empty {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      min-height: 280px;
+      color: var(--muted);
+      padding: 28px;
+    }
+
+    .empty strong {
+      display: block;
+      color: var(--text);
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+
+    .hint-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: .86rem;
+      padding-top: 4px;
+    }
+
+    @media (max-width: 1024px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 20px, 1240px); margin: 10px auto; }
+      .hero, .content, .sidebar { padding: 18px; }
+      .stats { grid-template-columns: 1fr; }
+      .hero-actions { width: 100%; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h1>Admin Toolkit</h1>
+          <p>Lokales Report-Dashboard</p>
+        </div>
+      </div>
+
+      <div class="panel-title">Navigation</div>
+      <div class="nav">
+        <button class="active" data-filter="all">
+          <span class="nav-label">Alle Reports</span>
+          <span class="nav-meta">TXT, CSV und JSON anzeigen</span>
+        </button>
+        <button data-filter="txt">
+          <span class="nav-label">TXT Reports</span>
+          <span class="nav-meta">Terminal- und Audit-Ausgaben</span>
+        </button>
+        <button data-filter="csv">
+          <span class="nav-label">CSV Reports</span>
+          <span class="nav-meta">Strukturierte Exportdateien</span>
+        </button>
+        <button data-filter="json">
+          <span class="nav-label">JSON Reports</span>
+          <span class="nav-meta">Maschinenlesbare Daten</span>
+        </button>
+      </div>
+
+      <div class="panel-title">Projekt-Hinweise</div>
+      <ol class="hint-list">
+        <li>Speichere diese Datei im gleichen Ordner wie dein Toolkit.</li>
+        <li>Lege Reports im Unterordner <code>reports</code> ab.</li>
+        <li>Öffne die Datei im Browser per Doppelklick oder <code>start dashboard.html</code>.</li>
+      </ol>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <div class="hero-top">
+          <div>
+            <h2>User Network Audit Dashboard</h2>
+            <p>Diese Oberfläche ist für dein Git-Bash- und Bash/PowerShell-Projekt gedacht. Sie liest lokale Reports aus dem <code>reports</code>-Ordner ein, zeigt Dateitypen an und gibt dir eine aufgeräumte Übersicht über dein Admin-Toolkit.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="button button-primary" id="refreshBtn">Reports neu laden</button>
+            <button class="button button-secondary" id="openLatestBtn">Neueste Datei öffnen</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="content">
+        <section class="stats">
+          <div class="stat-card">
+            <div class="stat-label">Gefundene Dateien</div>
+            <div class="stat-value" id="statAll">0</div>
+            <div class="stat-foot">Alle geladenen Reports</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">TXT</div>
+            <div class="stat-value" id="statTxt">0</div>
+            <div class="stat-foot">Audit-Ausgaben</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">CSV</div>
+            <div class="stat-value" id="statCsv">0</div>
+            <div class="stat-foot">Exportdateien</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">JSON</div>
+            <div class="stat-value" id="statJson">0</div>
+            <div class="stat-foot">Strukturierte Daten</div>
+          </div>
+        </section>
+
+        <section class="grid-2">
+          <article class="card">
+            <div class="card-head">
+              <h3>Report-Liste</h3>
+              <span class="badge" id="filterBadge">Filter: Alle</span>
+            </div>
+            <div class="file-list" id="fileList">
+              <div class="empty">
+                <div>
+                  <strong>Noch keine Reports geladen</strong>
+                  Lege Dateien im Ordner <code>reports</code> ab oder lade Beispiel-Dateien über den Browser-Button.
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h3>Datei-Vorschau</h3>
+              <span class="badge" id="currentFileBadge">Keine Datei</span>
+            </div>
+            <div class="viewer" id="viewer">
+              <div class="viewer-toolbar">
+                <span id="viewerMeta">Noch keine Datei ausgewählt</span>
+                <input type="file" id="filePicker" accept=".txt,.csv,.json" multiple />
+              </div>
+              <div class="empty" id="emptyState">
+                <div>
+                  <strong>Wähle einen Report aus</strong>
+                  Danach wird hier der Inhalt angezeigt. Für lokale Browser-Sicherheit kannst du Dateien auch manuell über den Datei-Button laden.
+                </div>
+              </div>
+              <pre id="preview" hidden></pre>
+            </div>
+            <div class="footer-note">Hinweis: Browser können lokale Ordner nicht immer automatisch lesen. Wenn dein Browser den Ordnerzugriff blockiert, nutze den Datei-Button rechts oben in der Vorschau.</div>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const state = {
+      files: [],
+      filtered: [],
+      activeFilter: 'all',
+      selectedIndex: -1
+    };
+
+    const sampleFiles = [
+      {
+        name: 'user_network_audit_2026-06-04_11-00-00.txt',
+        type: 'txt',
+        size: 4821,
+        modified: '2026-06-04 11:00',
+        content: 'SYSTEM\n============================================================\nComputername: GPBNB-25-01-043\nAktueller Benutzer: tn\nAdmin-Rechte: True\n\nLOKALE BENUTZERKONTEN\n- Administrator\n- tn\n- Gast\n\nNETZWERK NACHBARN\n- 192.168.178.1 fritz.box Reachable\n- 192.168.178.23 laptop-anna Reachable\n- 192.168.178.31 desktop-max Stale\n'
+      },
+      {
+        name: 'user_network_audit_2026-06-04_11-00-00.csv',
+        type: 'csv',
+        size: 891,
+        modified: '2026-06-04 11:00',
+        content: 'Type,Name,Detail1,Detail2,Detail3\nLocalUser,tn,Enabled=True,LastLogon=2026-06-04,SID=S-1-5-21\nNetworkDevice,192.168.178.1,Host=fritz.box,MAC=AA-BB-CC,State=Reachable\n'
+      },
+      {
+        name: 'user_network_audit_2026-06-04_11-00-00.json',
+        type: 'json',
+        size: 1422,
+        modified: '2026-06-04 11:00',
+        content: '{\n  "System": {\n    "ComputerName": "GPBNB-25-01-043",\n    "CurrentUser": "tn",\n    "CollectedAt": "2026-06-04T11:00:00"\n  },\n  "Neighbors": [\n    {\n      "IPAddress": "192.168.178.1",\n      "State": "Reachable"\n    }\n  ]\n}'
+      }
+    ];
+
+    const statAll = document.getElementById('statAll');
+    const statTxt = document.getElementById('statTxt');
+    const statCsv = document.getElementById('statCsv');
+    const statJson = document.getElementById('statJson');
+    const fileList = document.getElementById('fileList');
+    const preview = document.getElementById('preview');
+    const emptyState = document.getElementById('emptyState');
+    const viewerMeta = document.getElementById('viewerMeta');
+    const filterBadge = document.getElementById('filterBadge');
+    const currentFileBadge = document.getElementById('currentFileBadge');
+    const filePicker = document.getElementById('filePicker');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const openLatestBtn = document.getElementById('openLatestBtn');
+    const navButtons = [...document.querySelectorAll('.nav button')];
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    }
+
+    function detectType(name) {
+      const lower = name.toLowerCase();
+      if (lower.endsWith('.txt')) return 'txt';
+      if (lower.endsWith('.csv')) return 'csv';
+      if (lower.endsWith('.json')) return 'json';
+      return 'other';
+    }
+
+    function setStats(files) {
+      statAll.textContent = files.length;
+      statTxt.textContent = files.filter(f => f.type === 'txt').length;
+      statCsv.textContent = files.filter(f => f.type === 'csv').length;
+      statJson.textContent = files.filter(f => f.type === 'json').length;
+    }
+
+    function applyFilter(filter) {
+      state.activeFilter = filter;
+      state.filtered = filter === 'all' ? [...state.files] : state.files.filter(f => f.type === filter);
+      filterBadge.textContent = `Filter: ${filter.toUpperCase() === 'ALL' ? 'Alle' : filter.toUpperCase()}`;
+      renderFileList();
+    }
+
+    function selectFile(index) {
+      const file = state.filtered[index];
+      if (!file) return;
+      state.selectedIndex = index;
+      currentFileBadge.textContent = file.name;
+      viewerMeta.textContent = `${file.type.toUpperCase()} • ${formatBytes(file.size)} • ${file.modified || 'lokal geladen'}`;
+      preview.hidden = false;
+      emptyState.hidden = true;
+      preview.textContent = file.content || '(Keine Vorschau verfügbar)';
+      renderFileList();
+    }
+
+    function renderFileList() {
+      fileList.innerHTML = '';
+
+      if (!state.filtered.length) {
+        fileList.innerHTML = `
+          <div class="empty">
+            <div>
+              <strong>Keine Dateien in diesem Filter</strong>
+              Lade lokale Reports oder wechsle auf einen anderen Filter.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      state.filtered.forEach((file, index) => {
+        const button = document.createElement('button');
+        button.className = 'file-item' + (index === state.selectedIndex ? ' active' : '');
+        button.innerHTML = `
+          <strong>${file.name}</strong>
+          <small>${file.type.toUpperCase()} • ${formatBytes(file.size)} • ${file.modified || 'lokal geladen'}</small>
+        `;
+        button.addEventListener('click', () => selectFile(index));
+        fileList.appendChild(button);
+      });
+    }
+
+    function loadSampleFiles() {
+      state.files = [...sampleFiles];
+      state.files.sort((a, b) => a.name.localeCompare(b.name)).reverse();
+      setStats(state.files);
+      applyFilter(state.activeFilter);
+      if (state.filtered.length) selectFile(0);
+    }
+
+    function loadPickedFiles(fileListObj) {
+      const files = [...fileListObj];
+      if (!files.length) return;
+
+      Promise.all(files.map(file => file.text().then(content => ({
+        name: file.name,
+        type: detectType(file.name),
+        size: file.size,
+        modified: new Date(file.lastModified).toLocaleString('de-DE'),
+        content
+      })))).then(loaded => {
+        state.files = loaded.sort((a, b) => a.name.localeCompare(b.name)).reverse();
+        state.selectedIndex = -1;
+        setStats(state.files);
+        applyFilter(state.activeFilter);
+        if (state.filtered.length) selectFile(0);
+      });
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.selectedIndex = -1;
+        applyFilter(btn.dataset.filter);
+      });
+    });
+
+    refreshBtn.addEventListener('click', () => {
+      loadSampleFiles();
+    });
+
+    openLatestBtn.addEventListener('click', () => {
+      if (state.filtered.length) selectFile(0);
+    });
+
+    filePicker.addEventListener('change', event => {
+      loadPickedFiles(event.target.files);
+    });
+
+    loadSampleFiles();
+  </script>
+</body>
+</html>
