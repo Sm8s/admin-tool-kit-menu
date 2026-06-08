@@ -364,6 +364,24 @@ git_quick_add_commit() {
   git commit -m "$msg"
 }
 
+git_quick_add_commit() {
+  section "GIT QUICK COMMIT"
+
+  if ! git_check_repo; then
+    status_warn "Kein Git-Repository."
+    return
+  fi
+
+  read -rp "Commit-Nachricht eingeben: " msg
+  if [ -z "$msg" ]; then
+    status_warn "Leere Nachricht nicht erlaubt."
+    return
+  fi
+
+  git add .
+  git commit -m "$msg"
+}
+
 show_github_deploy_info() {
   section "GITHUB DEPLOY INFO"
 
@@ -377,6 +395,7 @@ show_github_deploy_info() {
   echo "Voraussetzungen:"
   echo "- Remote origin muss auf GitHub zeigen"
   echo "- index.html ist ideal als Startdatei"
+  echo "- Vor jedem Deploy wird automatisch ein Backup erstellt"
   echo "- GitHub Pages muss in den Repo-Settings aktiviert sein"
   echo
 
@@ -405,6 +424,50 @@ show_github_deploy_info() {
   echo "https://sm8s.github.io/admin-tool-kit-menu/"
 }
 
+run_predeploy_backup() {
+  section "PRE-DEPLOY BACKUP"
+
+  local stamp
+  local target_dir
+  local archive_file
+
+  stamp="$(date '+%Y-%m-%d_%H-%M-%S')"
+  mkdir -p "$BACKUP_DIR"
+
+  if command -v rsync >/dev/null 2>&1; then
+    target_dir="$BACKUP_DIR/predeploy_$stamp"
+    mkdir -p "$target_dir"
+
+    status_info "Erstelle rsync-Backup vor Deploy..."
+    if rsync -av \
+      --exclude ".git" \
+      --exclude "backups" \
+      --exclude "reports" \
+      "$SCRIPT_DIR/" "$target_dir/"; then
+      status_ok "Pre-Deploy-rsync-Backup erfolgreich: $target_dir"
+      return 0
+    else
+      status_fail "rsync-Backup fehlgeschlagen."
+      return 1
+    fi
+  fi
+
+  archive_file="$BACKUP_DIR/predeploy_$stamp.tar.gz"
+  status_warn "rsync nicht gefunden, nutze tar.gz Fallback..."
+
+  if tar -czf "$archive_file" \
+    --exclude=".git" \
+    --exclude="backups" \
+    --exclude="reports" \
+    -C "$SCRIPT_DIR" .; then
+    status_ok "Pre-Deploy-tar-Backup erfolgreich: $archive_file"
+    return 0
+  else
+    status_fail "tar-Backup fehlgeschlagen."
+    return 1
+  fi
+}
+
 github_deploy() {
   section "GITHUB DEPLOY"
 
@@ -423,6 +486,11 @@ github_deploy() {
   if [ ! -f "$SCRIPT_DIR/index.html" ] && [ ! -f "$SCRIPT_DIR/dashboard.html" ] && [ ! -f "$SCRIPT_DIR/dashboard-3.html" ]; then
     status_warn "Keine HTML-Startdatei gefunden."
     echo "Für GitHub Pages solltest du eine index.html im Projektordner haben."
+    return
+  fi
+
+  if ! run_predeploy_backup; then
+    status_fail "Deploy abgebrochen, weil das Backup fehlgeschlagen ist."
     return
   fi
 
