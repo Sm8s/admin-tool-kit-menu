@@ -1,0 +1,171 @@
+
+============================================================
+SYSTEM
+============================================================
+Skriptname       : user-network-audit.sh
+Computername     : GPBNB-25-01-043
+Aktueller Benutzer: tn
+Zeit             : Thu Jun  4 09:51:36     2026
+Skriptpfad       : /c/Users/tn/OneDrive - GPB Gesellschaft fÃ¼r Personalentwicklung und Bildung mbH/Desktop/linux-learning-platform/admin-toolkit
+Admin-Rechte     : False
+
+============================================================
+ZUSAMMENFASSUNG
+============================================================
+LocalUsers=6
+Profiles=2
+Neighbors=148
+
+============================================================
+LOKALE BENUTZERKONTEN
+============================================================
+
+Name               Enabled PasswordRequired LastLogon           SID                                           
+----               ------- ---------------- ---------           ---                                           
+admin                 True            False 09.12.2025 13:51:48 S-1-5-21-2210611541-1531564813-3095212701-1001
+Administrator        False             True 30.05.2023 07:24:45 S-1-5-21-2210611541-1531564813-3095212701-500 
+DefaultAccount       False            False                     S-1-5-21-2210611541-1531564813-3095212701-503 
+Gast                 False            False                     S-1-5-21-2210611541-1531564813-3095212701-501 
+tn                    True            False 04.06.2026 09:34:20 S-1-5-21-2210611541-1531564813-3095212701-1003
+WDAGUtilityAccount   False             True                     S-1-5-21-2210611541-1531564813-3095212701-504 
+
+============================================================
+LOKALE GRUPPEN
+============================================================
+
+Name                                        Description                                                       
+----                                        -----------                                                       
+Administratoren                             Administratoren haben uneingeschr„nkten Vollzugriff auf den Com...
+Benutzer                                    Benutzer k”nnen keine zuf„lligen oder beabsichtigten Žnderungen...
+Benutzermodus-Hardwareoperatoren            Mitglieder dieser Gruppe k”nnen Hardware aus dem Benutzermodus ...
+Device Owners                               Mitglieder dieser Gruppe k”nnen systemweite Einstellungen „ndern. 
+Distributed COM-Benutzer                    Mitglieder dieser Gruppe k”nnen Distributed-COM-Objekte auf die...
+Ereignisprotokollleser                      Mitglieder dieser Gruppe drfen Ereignisprotokolle des lokalen ...
+G„ste                                       G„ste besitzen standardm„áig die selben Zugriffsrechte wie Mitg...
+Hauptbenutzer                               "Hauptbenutzer" sind eingeschlossen aus Grnden der Rckw„rtsko...
+Hyper-V-Administratoren                     Die Mitglieder dieser Gruppe erhalten uneingeschr„nkten Zugriff...
+IIS_IUSRS                                   Von Internetinformationsdiensten verwendete integrierte Gruppe.   
+Kryptografie-Operatoren                     Die Mitglieder sind berechtigt, kryptographische Vorg„nge durch...
+Leistungsprotokollbenutzer                  Mitglieder dieser Gruppe k”nnen die Protokollierung von Leistun...
+Leistungsberwachungsbenutzer               Mitglieder dieser Gruppe k”nnen lokal und remote auf Leistungsz...
+Netzwerkkonfigurations-Operatoren           Mitglieder dieser Gruppe verfgen ber einige Administratorrech...
+OpenSSH-Benutzer                            Mitglieder dieser Gruppe k”nnen ber SSH....                      
+Remotedesktopbenutzer                       Mitglieder dieser Gruppe haben die Berechtigung, sich remote an...
+Remoteverwaltungsbenutzer                   Mitglieder dieser Gruppe k”nnen ber Verwaltungsprotokolle auf ...
+Replikations-Operator                       Untersttzt Dateireplikation in Dom„nen.                          
+Sicherungs-Operatoren                       Sicherungs-Operatoren k”nnen Sicherheitseinschr„nkungen ledigli...
+System Managed Accounts Group               Die Mitglieder dieser Gruppe werden vom System verwaltet.         
+Zugriffssteuerungs-Untersttzungsoperatoren Mitglieder dieser Gruppe k”nnen remote Autorisierungsattribute ...
+
+============================================================
+BENUTZERPROFILE
+============================================================
+
+UserName              LocalPath      SID                                            Loaded LastUseTime
+--------              ---------      ---                                            ------ -----------
+GPBNB-25-01-043\admin C:\Users\admin S-1-5-21-2210611541-1531564813-3095212701-1001  False            
+GPBNB-25-01-043\tn    C:\Users\tn    S-1-5-21-2210611541-1531564813-3095212701-1003   True            
+
+============================================================
+PROFILORDNER DETAILS
+============================================================
+
+Name  FullName       FolderLastWrite     NtUserDatLastWrite 
+----  --------       ---------------     ------------------ 
+admin C:\Users\admin 09.12.2025 14:34:24                    
+tn    C:\Users\tn    03.06.2026 12:00:45 04.06.2026 08:52:07
+
+============================================================
+AKTUELL ANGEMELDETE USER
+============================================================
+ BENUTZERNAME          SITZUNGSNAME       ID  STATUS  LEERLAUF   ANMELDEZEIT
+>tn                    console             5  Aktiv       20:07  04.06.2026 08:52
+
+============================================================
+LETZTE INTERAKTIVE LOGINS AUS EVENTLOG
+============================================================
+Security-Eventlog nicht lesbar oder keine Berechtigung.
+
+============================================================
+NETZWERK INTERFACES
+============================================================
+
+InterfaceAlias InterfaceDescription                      IPv4            Gateway      DNS                   
+-------------- --------------------                      ----            -------      ---                   
+Ethernet       Realtek PCIe GbE Family Controller        172.16.1.154    172.16.0.9   172.16.0.5, 172.16.0.7
+WLAN 2         MediaTek Wi-Fi 6 MT7921 Wireless LAN Card 169.254.216.249 172.16.120.4 8.8.8.8               
+
+============================================================
+NETZWERK NACHBARN
+============================================================
+
+IPAddress      Hostname                   MACAddress            State InterfaceAlias
+---------      --------                   ----------            ----- --------------
+172.16.0.161                              F8-0F-41-C1-5E-97     Stale Ethernet      
+172.16.0.27    GPBNB005.tnnk.local        4C-52-62-35-D1-F8     Stale Ethernet      
+172.16.0.29                               74-56-3C-0B-66-EA     Stale Ethernet      
+172.16.0.33                               98-EE-CB-21-1B-B6     Stale Ethernet      
+172.16.0.38    GPBK33-100.tnnk.local      88-AE-DD-A3-BC-5D     Stale Ethernet      
+172.16.0.40    GPBPC019.tnnk.local        88-AE-DD-A3-BA-6D     Stale Ethernet      
+172.16.0.46    GPBJ41-16                  4C-52-62-3F-86-9F     Stale Ethernet      
+172.16.0.49                               88-AE-DD-A3-BC-C1     Stale Ethernet      
+172.16.0.5     TN-DC-001.tnnk.local       00-15-5D-00-04-22 Reachable Ethernet      
+172.16.0.54                               88-AE-DD-A4-2A-33     Stale Ethernet      
+172.16.0.55    GPBJ31-100.tnnk.local      00-D8-61-F8-91-36     Stale Ethernet      
+172.16.0.61                               08-00-27-17-4B-E4     Stale Ethernet      
+172.16.0.63                               00-15-5D-00-04-19     Stale Ethernet      
+172.16.0.7     DC3NK.tnnk.local           4C-52-62-28-E6-C4     Stale Ethernet      
+172.16.0.87    DESKTOP-FP4OP26.tnnk.local 4C-52-62-35-D2-BF     Stale Ethernet      
+172.16.0.9                                00-1A-8C-58-2D-75 Reachable Ethernet      
+172.16.1.116                              4C-52-62-3F-5F-5A     Stale Ethernet      
+172.16.1.117   GPBJ11-33                  4C-52-62-A0-27-FA     Stale Ethernet      
+172.16.1.131   GPBJ51-31                  4C-52-62-3F-0A-E2     Stale Ethernet      
+172.16.1.147   windows-phone.tnnk.local   88-AE-DD-A3-BC-E2     Stale Ethernet      
+172.16.1.160   GPBJ21-31                  4C-52-62-35-D3-7C     Stale Ethernet      
+172.16.1.165   rj22004win10.tnnk.local    4C-52-62-42-3B-F4     Stale Ethernet      
+172.16.1.235                              DC-CD-2F-A3-9B-E2     Stale Ethernet      
+172.16.1.249                              DC-CD-2F-A3-9D-C5     Stale Ethernet      
+172.16.1.63    GPBJ41-28                  4C-52-62-AC-69-51     Stale Ethernet      
+172.16.1.96    desktop-5cbin7j.tnnk.local 4C-52-62-A0-2E-45     Stale Ethernet      
+172.16.120.133                            EE-AA-70-99-4A-7F     Stale WLAN 2        
+172.16.120.4                              D0-50-99-D1-5A-43     Stale WLAN 2        
+
+============================================================
+ARP CACHE
+============================================================
+
+Schnittstelle: 172.16.1.154 --- 0x8
+  Internetadresse       Physische Adresse     Typ
+  172.16.0.5            00-15-5d-00-04-22     dynamisch 
+  172.16.0.7            4c-52-62-28-e6-c4     dynamisch 
+  172.16.0.9            00-1a-8c-58-2d-75     dynamisch 
+  172.16.0.27           4c-52-62-35-d1-f8     dynamisch 
+  172.16.0.29           74-56-3c-0b-66-ea     dynamisch 
+  172.16.0.33           98-ee-cb-21-1b-b6     dynamisch 
+  172.16.0.38           88-ae-dd-a3-bc-5d     dynamisch 
+  172.16.0.40           88-ae-dd-a3-ba-6d     dynamisch 
+  172.16.0.46           4c-52-62-3f-86-9f     dynamisch 
+  172.16.0.49           88-ae-dd-a3-bc-c1     dynamisch 
+  172.16.0.54           88-ae-dd-a4-2a-33     dynamisch 
+  172.16.0.55           00-d8-61-f8-91-36     dynamisch 
+  172.16.0.61           08-00-27-17-4b-e4     dynamisch 
+  172.16.0.63           00-15-5d-00-04-19     dynamisch 
+  172.16.0.87           4c-52-62-35-d2-bf     dynamisch 
+  172.16.0.161          f8-0f-41-c1-5e-97     dynamisch 
+  172.16.1.63           4c-52-62-ac-69-51     dynamisch 
+  172.16.1.96           4c-52-62-a0-2e-45     dynamisch 
+  172.16.1.116          4c-52-62-3f-5f-5a     dynamisch 
+  172.16.1.117          4c-52-62-a0-27-fa     dynamisch 
+  172.16.1.131          4c-52-62-3f-0a-e2     dynamisch 
+  172.16.1.147          88-ae-dd-a3-bc-e2     dynamisch 
+  172.16.1.160          4c-52-62-35-d3-7c     dynamisch 
+  172.16.1.165          4c-52-62-42-3b-f4     dynamisch 
+  172.16.1.235          dc-cd-2f-a3-9b-e2     dynamisch 
+  172.16.1.249          dc-cd-2f-a3-9d-c5     dynamisch 
+  172.16.1.250          d0-50-99-d1-5a-42     dynamisch 
+  172.16.1.255          ff-ff-ff-ff-ff-ff     statisch  
+  224.0.0.22            01-00-5e-00-00-16     statisch  
+  224.0.0.251           01-00-5e-00-00-fb     statisch  
+  224.0.0.252           01-00-5e-00-00-fc     statisch  
+  239.255.255.250       01-00-5e-7f-ff-fa     statisch  
+  255.255.255.255       ff-ff-ff-ff-ff-ff     statisch  

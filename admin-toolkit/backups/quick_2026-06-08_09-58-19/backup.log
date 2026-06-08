@@ -1,0 +1,11 @@
+[2026-06-04 09:34:39] [INFO] Backup gestartet
+[2026-06-04 09:34:39] [INFO] Quelle: /c/Users/tn/OneDrive - GPB Gesellschaft für Personalentwicklung und Bildung mbH/Desktop/linux-learning-platform/admin-toolkit
+[2026-06-04 09:34:39] [INFO] Ziel: /c/Users/tn/OneDrive - GPB Gesellschaft für Personalentwicklung und Bildung mbH/Desktop/linux-learning-platform/admin-toolkit/backups
+[2026-06-04 09:34:39] [INFO] Verwendeter Backup-Modus: tar
+[2026-06-04 09:34:40] [INFO] Starte tar-Backup: /c/Users/tn/OneDrive - GPB Gesellschaft für Personalentwicklung und Bildung mbH/Desktop/linux-learning-platform/admin-toolkit/backups/backup_2026-06-04_09-34-39.tar.gz
+tar: Removing leading `/' from member names
+[2026-06-04 09:34:40] [INFO] Tar-Backup erfolgreich
+[2026-06-04 09:34:40] [INFO] SHA256 erstellt: /c/Users/tn/OneDrive - GPB Gesellschaft für Personalentwicklung und Bildung mbH/Desktop/linux-learning-platform/admin-toolkit/backups/backup_2026-06-04_09-34-39.tar.gz.sha256
+[2026-06-04 09:34:40] [INFO] Bereinige Backups älter als 7 Tage
+[2026-06-04 09:34:41] [INFO] Alte Backups bereinigt
+[2026-06-04 09:34:41] [INFO] Backup abgeschlossen

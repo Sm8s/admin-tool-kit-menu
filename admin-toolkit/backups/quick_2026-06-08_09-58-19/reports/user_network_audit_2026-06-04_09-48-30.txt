@@ -1,0 +1,45 @@
+
+==================================================
+SYSTEM
+==================================================
+Computername : GPBNB-25-01-043
+Benutzer     : tn
+Zeit         : Thu Jun  4 09:48:31     2026
+Pfad         : /c/Users/tn/OneDrive - GPB Gesellschaft für Personalentwicklung und Bildung mbH/Desktop/linux-learning-platform/admin-toolkit
+
+==================================================
+LOKALE BENUTZERKONTEN
+==================================================
+
+Name               Enabled LastLogon          
+----               ------- ---------          
+admin                 True 09.12.2025 13:51:48
+Administrator        False 30.05.2023 07:24:45
+DefaultAccount       False                    
+Gast                 False                    
+tn                    True 04.06.2026 09:34:20
+WDAGUtilityAccount   False                    
+
+==================================================
+BENUTZERPROFILE AUF DIESEM PC
+==================================================
+
+LocalPath      LastUseTime         Loaded
+---------      -----------         ------
+C:\Users\admin                      False
+C:\Users\tn    04.06.2026 09:48:35   True
+
+==================================================
+C_USERS ORDNER
+==================================================
+
+Name  FullName      
+----  --------      
+admin C:\Users\admin
+tn    C:\Users\tn   
+
+==================================================
+AKTUELL ODER KÜRZLICH ANGEMELDETE USER
+==================================================
+ BENUTZERNAME          SITZUNGSNAME       ID  STATUS  LEERLAUF   ANMELDEZEIT
+>tn                    console             5  Aktiv       20:04  04.06.2026 08:52
