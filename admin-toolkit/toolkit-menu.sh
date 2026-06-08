@@ -348,6 +348,7 @@ show_git_remote() {
 
 git_quick_add_commit() {
   section "GIT QUICK COMMIT"
+
   if ! git_check_repo; then
     status_warn "Kein Git-Repository."
     return
@@ -361,6 +362,113 @@ git_quick_add_commit() {
 
   git add .
   git commit -m "$msg"
+}
+
+show_github_deploy_info() {
+  section "GITHUB DEPLOY INFO"
+
+  if ! git_check_repo; then
+    status_warn "Kein Git-Repository."
+    return
+  fi
+
+  echo "Repository: Sm8s/admin-tool-kit-menu"
+  echo "Deploy-Ziel: GitHub Pages"
+  echo "Voraussetzungen:"
+  echo "- Remote origin muss auf GitHub zeigen"
+  echo "- index.html ist ideal als Startdatei"
+  echo "- GitHub Pages muss in den Repo-Settings aktiviert sein"
+  echo
+
+  if [ -f "$SCRIPT_DIR/index.html" ]; then
+    status_ok "index.html gefunden"
+  elif [ -f "$SCRIPT_DIR/dashboard.html" ]; then
+    status_ok "dashboard.html gefunden"
+    status_info "Hinweis: Für GitHub Pages ist index.html als Startdatei besser."
+  elif [ -f "$SCRIPT_DIR/dashboard-3.html" ]; then
+    status_ok "dashboard-3.html gefunden"
+    status_info "Hinweis: Benenne die Datei am besten in index.html um."
+  else
+    status_warn "Keine HTML-Startdatei gefunden."
+  fi
+
+  echo
+  if git remote get-url origin >/dev/null 2>&1; then
+    status_info "Remote origin:"
+    git remote get-url origin
+  else
+    status_warn "Kein Remote origin gefunden."
+  fi
+
+  echo
+  status_info "Mögliche GitHub Pages URL:"
+  echo "https://sm8s.github.io/admin-tool-kit-menu/"
+}
+
+github_deploy() {
+  section "GITHUB DEPLOY"
+
+  if ! git_check_repo; then
+    status_fail "Kein Git-Repository."
+    return
+  fi
+
+  if ! git remote get-url origin >/dev/null 2>&1; then
+    status_fail "Kein Remote 'origin' gefunden."
+    echo "Beispiel:"
+    echo "git remote add origin https://github.com/Sm8s/admin-tool-kit-menu.git"
+    return
+  fi
+
+  if [ ! -f "$SCRIPT_DIR/index.html" ] && [ ! -f "$SCRIPT_DIR/dashboard.html" ] && [ ! -f "$SCRIPT_DIR/dashboard-3.html" ]; then
+    status_warn "Keine HTML-Startdatei gefunden."
+    echo "Für GitHub Pages solltest du eine index.html im Projektordner haben."
+    return
+  fi
+
+  local current_branch
+  current_branch="$(git branch --show-current 2>/dev/null)"
+
+  if [ -z "$current_branch" ]; then
+    status_fail "Aktuelle Branch konnte nicht erkannt werden."
+    return
+  fi
+
+  read -rp "Commit-Nachricht für Deploy [default: deploy update]: " deploy_msg
+  [ -z "$deploy_msg" ] && deploy_msg="deploy update"
+
+  status_info "Aktuelle Branch: $current_branch"
+  status_info "Remote: $(git remote get-url origin 2>/dev/null)"
+
+  git add .
+
+  if git diff --cached --quiet && git diff --quiet; then
+    status_warn "Keine Änderungen gefunden. Es wird trotzdem ein Push versucht."
+  else
+    if git commit -m "$deploy_msg"; then
+      status_ok "Commit erstellt."
+    else
+      status_warn "Commit fehlgeschlagen oder nichts zu committen."
+    fi
+  fi
+
+  if git push -u origin "$current_branch"; then
+    status_ok "Code erfolgreich nach GitHub gepusht."
+  else
+    status_fail "Push fehlgeschlagen."
+    return
+  fi
+
+  echo
+  status_info "Danach auf GitHub prüfen:"
+  echo "1) Repository öffnen: https://github.com/Sm8s/admin-tool-kit-menu"
+  echo "2) Settings -> Pages"
+  echo "3) Source: Deploy from a branch"
+  echo "4) Branch: $current_branch"
+  echo "5) Folder: /(root)"
+  echo
+  status_info "Mögliche Live-URL:"
+  echo "https://sm8s.github.io/admin-tool-kit-menu/"
 }
 
 show_backup_log() {
@@ -407,27 +515,29 @@ show_recent_logs() {
   fi
 }
 
-submenu_audit() {
+submenu_git() {
   while true; do
     header
-    echo "AUDIT & SYSTEM"
-    menu_item 1 "user-network-audit.sh"
-    menu_item 2 "systeminfo.sh"
-    menu_item 3 "diskspace.sh"
-    menu_item 4 "usercheck.sh"
-    menu_item 5 "process-monitor.sh"
-    menu_item 6 "network-sweep.sh"
+    echo "GIT CENTER"
+    menu_item 1 "Git-Status"
+    menu_item 2 "Aktuelle Branch"
+    menu_item 3 "Letzte Commits"
+    menu_item 4 "Remote anzeigen"
+    menu_item 5 "Quick add + commit"
+    menu_item 6 "GitHub Deploy Info"
+    menu_item 7 "GitHub Deploy starten"
     menu_item 0 "Zurück"
     echo
     read -rp "Auswahl: " choice
 
     case "$choice" in
-      1) run_script "user-network-audit.sh"; pause_screen ;;
-      2) run_script "systeminfo.sh"; pause_screen ;;
-      3) run_script "diskspace.sh"; pause_screen ;;
-      4) run_script "usercheck.sh"; pause_screen ;;
-      5) run_script "process-monitor.sh"; pause_screen ;;
-      6) run_script "network-sweep.sh"; pause_screen ;;
+      1) show_git_status; pause_screen ;;
+      2) show_git_branch; pause_screen ;;
+      3) show_git_log; pause_screen ;;
+      4) show_git_remote; pause_screen ;;
+      5) git_quick_add_commit; pause_screen ;;
+      6) show_github_deploy_info; pause_screen ;;
+      7) github_deploy; pause_screen ;;
       0) break ;;
       *) status_fail "Ungültige Auswahl."; pause_screen ;;
     esac
@@ -470,6 +580,8 @@ submenu_git() {
     menu_item 3 "Letzte Commits"
     menu_item 4 "Remote anzeigen"
     menu_item 5 "Quick add + commit"
+    menu_item 6 "GitHub Deploy Info"
+    menu_item 7 "GitHub Deploy starten"
     menu_item 0 "Zurück"
     echo
     read -rp "Auswahl: " choice
@@ -480,6 +592,8 @@ submenu_git() {
       3) show_git_log; pause_screen ;;
       4) show_git_remote; pause_screen ;;
       5) git_quick_add_commit; pause_screen ;;
+      6) show_github_deploy_info; pause_screen ;;
+      7) github_deploy; pause_screen ;;
       0) break ;;
       *) status_fail "Ungültige Auswahl."; pause_screen ;;
     esac

@@ -1,0 +1,98 @@
+
+============================================================
+SYSTEM
+============================================================
+Skriptname: user-network-audit.sh
+Computername: GPBNB-25-01-043
+Aktueller Benutzer: tn
+Zeit: Thu Jun  4 12:19:33     2026
+Skriptpfad: /c/Users/tn/OneDrive - GPB Gesellschaft fÃ¼r Personalentwicklung und Bildung mbH/Desktop/linux-learning-platform/admin-toolkit
+Admin-Rechte: False
+
+============================================================
+ZUSAMMENFASSUNG
+============================================================
+LocalUsers=6
+Profiles=2
+Neighbors=164
+
+============================================================
+LOKALE BENUTZERKONTEN
+============================================================
+"Name","Enabled","PasswordRequired","LastLogon"
+"admin","True","False","09.12.2025 13:51:48"
+"Administrator","False","True","30.05.2023 07:24:45"
+"DefaultAccount","False","False",
+"Gast","False","False",
+"tn","True","False","04.06.2026 11:46:10"
+"WDAGUtilityAccount","False","True",
+
+============================================================
+LOKALE GRUPPEN
+============================================================
+
+Name                                        Description                                                                                                                                                          
+----                                        -----------                                                                                                                                                          
+Administratoren                             Administratoren haben uneingeschr„nkten Vollzugriff auf den Computer bzw. die Dom„ne.                                                                                
+Benutzer                                    Benutzer k”nnen keine zuf„lligen oder beabsichtigten Žnderungen am System durchfhren und drfen die meisten herk”mmlichen Anwendungen ausfhren.                    
+Benutzermodus-Hardwareoperatoren            Mitglieder dieser Gruppe k”nnen Hardware aus dem Benutzermodus betreiben.                                                                                            
+Device Owners                               Mitglieder dieser Gruppe k”nnen systemweite Einstellungen „ndern.                                                                                                    
+Distributed COM-Benutzer                    Mitglieder dieser Gruppe k”nnen Distributed-COM-Objekte auf diesem Computer starten, aktivieren und verwenden.                                                       
+Ereignisprotokollleser                      Mitglieder dieser Gruppe drfen Ereignisprotokolle des lokalen Computers lesen                                                                                       
+G„ste                                       G„ste besitzen standardm„áig die selben Zugriffsrechte wie Mitglieder der Benutzergruppe. Das Gastkonto ist jedoch zus„tzlich eingeschr„nkt.                         
+Hauptbenutzer                               "Hauptbenutzer" sind eingeschlossen aus Grnden der Rckw„rtskompatibilit„t, sie besitzen eingeschr„nkte administrative Rechte.                                      
+Hyper-V-Administratoren                     Die Mitglieder dieser Gruppe erhalten uneingeschr„nkten Zugriff auf s„mtliche Features von Hyper-V.                                                                  
+IIS_IUSRS                                   Von Internetinformationsdiensten verwendete integrierte Gruppe.                                                                                                      
+Kryptografie-Operatoren                     Die Mitglieder sind berechtigt, kryptographische Vorg„nge durchzufhren.                                                                                             
+Leistungsprotokollbenutzer                  Mitglieder dieser Gruppe k”nnen die Protokollierung von Leistungsindikatoren planen, Traceanbieter aktivieren und Ereignistraces sammeln, sowohl lokal als auch b...
+Leistungsberwachungsbenutzer               Mitglieder dieser Gruppe k”nnen lokal und remote auf Leistungsz„hlerdaten zugreifen                                                                                  
+Netzwerkkonfigurations-Operatoren           Mitglieder dieser Gruppe verfgen ber einige Administratorrechte zum Verwalten der Konfiguration von Netzwerkfeatures.                                              
+OpenSSH-Benutzer                            Mitglieder dieser Gruppe k”nnen ber SSH....                                                                                                                         
+Remotedesktopbenutzer                       Mitglieder dieser Gruppe haben die Berechtigung, sich remote anzumelden.                                                                                             
+Remoteverwaltungsbenutzer                   Mitglieder dieser Gruppe k”nnen ber Verwaltungsprotokolle auf WMI-Ressourcen zugreifen (z. B. WS-Verwaltung ber den Windows-Remoteverwaltungsdienst). Dies gilt ...
+Replikations-Operator                       Untersttzt Dateireplikation in Dom„nen.                                                                                                                             
+Sicherungs-Operatoren                       Sicherungs-Operatoren k”nnen Sicherheitseinschr„nkungen lediglich zum Sichern oder Wiederherstellen von Dateien auáer Kraft setzen.                                  
+System Managed Accounts Group               Die Mitglieder dieser Gruppe werden vom System verwaltet.                                                                                                            
+Zugriffssteuerungs-Untersttzungsoperatoren Mitglieder dieser Gruppe k”nnen remote Autorisierungsattribute und -berechtigungen fr Ressourcen auf dem Computer abfragen.                                         
+
+============================================================
+BENUTZERPROFILE
+============================================================
+
+UserName              LocalPath      SID                                            Loaded LastUseTime
+--------              ---------      ---                                            ------ -----------
+GPBNB-25-01-043\admin C:\Users\admin S-1-5-21-2210611541-1531564813-3095212701-1001  False            
+GPBNB-25-01-043\tn    C:\Users\tn    S-1-5-21-2210611541-1531564813-3095212701-1003   True            
+
+============================================================
+PROFILORDNER DETAILS
+============================================================
+
+Name  FullName       FolderLastWrite     NtUserDatLastWrite 
+----  --------       ---------------     ------------------ 
+admin C:\Users\admin 09.12.2025 14:34:24                    
+tn    C:\Users\tn    04.06.2026 12:17:08 04.06.2026 08:52:07
+
+============================================================
+AKTUELL ANGEMELDETE USER
+============================================================
+ BENUTZERNAME          SITZUNGSNAME       ID  STATUS  LEERLAUF   ANMELDEZEIT
+>tn                    console             5  Aktiv       22:35  04.06.2026 08:52
+
+============================================================
+LETZTE INTERAKTIVE LOGINS AUS EVENTLOG
+============================================================
+Security-Eventlog nicht lesbar oder keine Berechtigung.
+
+============================================================
+NETZWERK INTERFACES
+============================================================
+
+InterfaceAlias InterfaceDescription                      IPv4          Gateway      DNS                   
+-------------- --------------------                      ----          -------      ---                   
+Ethernet       Realtek PCIe GbE Family Controller        172.16.1.154  172.16.0.9   172.16.0.5, 172.16.0.7
+WLAN 2         MediaTek Wi-Fi 6 MT7921 Wireless LAN Card 172.16.120.70 172.16.120.4 8.8.8.8               
+
+============================================================
+NETZWERK NACHBARN
+============================================================
